@@ -8,7 +8,8 @@ from sklearn.model_selection import (StratifiedKFold, LeaveOneOut,
                                      cross_validate,
                                      permutation_test_score)
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.svm import SVC
+from sklearn.ensemble import AdaBoostClassifier,GradientBoostingClassifier
 from sklearn.metrics import f1_score, confusion_matrix, make_scorer
 import matplotlib
 import matplotlib.pyplot as plt
@@ -39,6 +40,24 @@ pipe = Pipeline([
     ('scaler', StandardScaler()),
     ('clf', AdaBoostClassifier(random_state=0))
 ])
+
+# Gradient Boosting Classifier
+# pipe = Pipeline([
+#     (),
+#     ('scaler', StandardScaler()),
+#     ('clf', GradientBoostingClassifier(n_estimators=30, learning_rate=1.0, max_depth=1, random_state=0))
+# ])
+
+# For svc with feature selection
+# need to comment out all features importnce processes
+# as SVC return no feature importances
+
+# pipe = Pipeline([
+#             ('reduce_dim', SelectKBest(f_classif, k=60)),
+#             ('scaler', StandardScaler()),
+#             ('clf', SVC(class_weight='balanced'))
+#   ])
+
 results = {}
 results['fold'] = []
 results['metric'] = []
@@ -133,7 +152,6 @@ perm_res['pvalue'] = []
 perm_res['metric'] = []
 
 loo = LeaveOneOut()
-# iterate over those with score > 0.7
 for metric in key_words:
     X = df[[i for i in df.columns if metric in i]].values
     # replicate pipeline that produces this result
